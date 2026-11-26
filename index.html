@@ -232,6 +232,7 @@ body[data-screen="play"] #bgc { opacity: .5; }
 .chip.beats::after { display: none; }
 .bd { display: flex; gap: 4px; height: 10px; align-items: center; justify-content: center; }
 .bd i { display: block; width: 10px; height: 10px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 52%, transparent); transition: transform .12s, background .12s, box-shadow .12s; }
+.bd i.bq { width: 6px; height: 6px; }
 .bd i.bh { width: 6px; border-radius: 10px 0 0 10px; }
 .bd i.lit { background: #fff; box-shadow: 0 0 0 2px var(--ink); transform: scale(1.3); }
 .bd .bdn { width: auto; height: auto; background: none; font: 700 12px/1 inherit; font-style: normal; }
@@ -245,6 +246,7 @@ body[data-screen="play"] #bgc { opacity: .5; }
 .bb-t { font-size: 18px; font-weight: 700; color: var(--ink2); }
 .bb-dots { display: flex; gap: 10px; align-items: center; }
 .bb-dots i { display: block; width: 26px; height: 26px; border-radius: 50%; background: color-mix(in srgb, var(--c, var(--pink)) 35%, #fff); box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--c, var(--pink)) 80%, var(--ink)); transition: transform .12s, background .12s; }
+.bb-dots i.bq { width: 14px; height: 14px; }
 .bb-dots i.bh { width: 14px; border-radius: 26px 0 0 26px; }
 .bb-dots i.lit { background: var(--c, var(--pink)); transform: scale(1.25); box-shadow: inset 0 0 0 3px var(--ink), 0 0 0 4px #fff; }
 .bb-n { min-width: 34px; font-size: 34px; font-weight: 800; color: var(--ink); text-align: center; }
@@ -1134,6 +1136,20 @@ const DEFAULT_SONGS = [
       'Mi:1 Re:1/2 Mi:1 Fa#:1 Mi:1 Re:1/2 Si4:2\n' +
       'Si4:1 Re5:1 Mi:1 Fa#:1 Mi:1/2 Re:1 Si4:1/2 La:1 Si:1/2 Re5:2\n' +
       'Re5:4' },
+  /* sacada del video de violín (notas de los subtítulos + tiempos medidos en el audio, a 70 tiempos por minuto) */
+  { id: 'sanlucas', name: 'San Lucas', color: '#ffb3d9', oct: 0, bpm: 70,
+    text: 'Mi4 Fa# Si:2 Do5 Si4:2\n' +
+      'Mi5:1/2 Re Si4:1.5 La:1/2 Sol:1.5\n' +
+      'Mi4 Fa# Si:2 Do5 Si4:2\n' +
+      'Mi5:1/2 Re Si4:1.5 La:1/2 Sol Mi:1/2\n' +
+      'Mi5:1/2 Mi:1/2 Mi:1/2 Mi:1/2 Re:1/2 Si4:1\n' +
+      'Si:1/2 Si:1/2 Si:1/2 Sol:1/2 Do5:1/2 Do:1/2 Si4:1/2\n' +
+      'Si:1/2 Si:1/4 Do5:1/4 Do:1/4 Si4:1/4 Sol:1/2 Do5:1/2 Do:1/2 Si4:1/2\n' +
+      'Sol:1/2 La:1/2 Si:1/2 La:1/2 Sol:1/2 Fa#:1/2 Mi:1\n' +
+      'Mi5:1/2 Mi:1/2 Mi:1/2 Mi:1/2 Re:1/2 Si4:1\n' +
+      'Si:1/2 Si:1/2 Si:1/2 Sol:1/2 Do5:1/2 Do:1/2 Si4:1/2\n' +
+      'Si:1/2 Si:1/4 Do5:1/4 Do:1/4 Si4:1/4 Sol:1/2 Do5:1/2 Do:1/2 Si4:1/2\n' +
+      'Sol:1/2 La:1/2 Si:1/2 La:1/2 Sol:1/2 Fa#:1/2 Mi:3' },
 ];
 /* canciones de fábrica que ya existían antes de llevar la cuenta (si ella borró una, no vuelve) */
 const OLD_DEFAULT_IDS = ['canon', 'aida', 'blue', 'adelina'];
@@ -2195,17 +2211,19 @@ function beatParts(d) {
   const out = [];
   for (let i = 0; i < full; i++) out.push(1);
   if (half) out.push(0.5);
+  if (!out.length) out.push(0.25); // notas rapidititas
   return out;
 }
 function beatDots(d) {
   const parts = beatParts(d);
   const el = h('span', { class: 'bd', 'aria-hidden': 'true' });
   if (parts.length > 4) { el.append(h('i', { class: 'bdn' }, String(d).replace('.', ','))); return el; }
-  parts.forEach((p) => el.append(h('i', { class: p === 1 ? 'b1' : 'bh' })));
+  parts.forEach((p) => el.append(h('i', { class: p === 1 ? 'b1' : p === 0.5 ? 'bh' : 'bq' })));
   return el;
 }
 function beatWords(d) {
   if (d === 0.5) return 'medio tiempo';
+  if (d < 0.5) return 'un ratito (rapidita)';
   const n = String(d).replace('.', ',');
   return n + (d === 1 ? ' tiempo' : ' tiempos');
 }
@@ -4046,7 +4064,7 @@ Screens.play = function (P) {
     E.bb.classList.remove('hide');
     E.bb.classList.toggle('holding', !!holding);
     E.bb.style.setProperty('--c', pcColor(s.midi));
-    E.bbDots.replaceChildren(...beatParts(d).map((p, k) => h('i', { class: (p === 1 ? 'b1' : 'bh') + (k < lit ? ' lit' : '') })));
+    E.bbDots.replaceChildren(...beatParts(d).map((p, k) => h('i', { class: (p === 1 ? 'b1' : p === 0.5 ? 'bh' : 'bq') + (k < lit ? ' lit' : '') })));
     if (!holding) { E.bbT.textContent = 'Dura ' + beatWords(d); E.bbN.textContent = ''; }
   }
   function startHold(s, done) {
