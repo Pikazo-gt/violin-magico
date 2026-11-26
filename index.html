@@ -1111,22 +1111,33 @@ const SONG_COLOR_NAMES = ['Amarillo', 'Celeste', 'Lila', 'Coral', 'Menta', 'Rosa
 /* canciones de la maestra, TAL CUAL */
 /* canciones de la profe, con el ritmo de la melodía original (duración en tiempos: Fa#:2 = 2 tiempos, Re:1/2 = medio) */
 const DEFAULT_SONGS = [
+  /* las 4 de la profe, sacadas otra vez de sus videos: notas de sus subtítulos (o de lo que se oye) + tiempos medidos en el audio */
   { id: 'canon', name: 'Canon en Re', color: '#ffd84d', oct: 0, bpm: 75,
-    text: 'Fa#5:2 Mi:2 Re:2 Do#:2 Si:2 La:2 Si:2 Do#:2\n' +
-      'Fa#4:2 Mi:2 Re:2 Do#:2 Re:2 Si:2 La:2 Si:2 Re:4' },
-  { id: 'aida', name: 'Marcha de Aida', color: '#7fd0ff', oct: 0, bpm: 88,
-    text: 'La4 Re:2\nMi Re Mi Fa#:2\nFa# Sol Mi Fa# Mi Re:2\nMi Fa# Fa# Mi Re:2\nMi Fa# Fa#:2 Mi Fa# Fa#:2\nRe Mi:3\n' +
-      'La4 Re:2\nMi Re Mi Fa#:2\nFa# Sol Mi Fa# Mi Re:2\nMi Fa# Fa# Mi Re:2\nMi Fa# Fa#:2 Mi Fa# Fa#:2\nMi Fa# Mi Re Re Re Re:3' },
+    text: 'Fa#5:2 Mi:2 Re:2 Do#:2\n' +
+      'Si4:2 La:2 Si:2 Do#5 Re:4' },
+  { id: 'aida', name: 'Marcha de Aida', color: '#7fd0ff', oct: 0, bpm: 72,
+    text: 'La4 Re5:2\n' +
+      'Mi:1/2 Re:1/2 Mi:1/2 Fa#:2\n' +
+      'Fa#:1/2 Sol:1/2 Mi:1/2 Fa# Mi:1/2 Re:1.5\n' +
+      'Mi:1/2 Fa#:1/2 Fa#:1/2 Mi:1/2 Re\n' +
+      'Mi:1/2 Fa#:1/2 Fa# Mi:1/2 Fa#:1/2 Fa#\n' +
+      'Re Mi:2.5\n' +
+      'La4 Re5:2\n' +
+      'Mi:1/2 Re:1/2 Mi:1/2 Fa#:2\n' +
+      'Fa#:1/2 Sol:1/2 Mi:1/2 Fa# Mi:1/2 Re:1.5\n' +
+      'Mi:1/2 Fa#:1/2 Fa#:1/2 Mi:1/2 Re\n' +
+      'Mi:1/2 Fa#:1/2 Fa# Mi:1/2 Fa#:1/2 Fa#\n' +
+      'Mi:1/2 Fa#:1/2 Mi:1/2 Re Re:1/2 Re:1/2 Re:2' },
   { id: 'blue', name: 'Love is Blue', color: '#c7a6ff', oct: 0, bpm: 75,
-    text: 'Mi5 Re Do Si La Sol:2\n' +
-      'La Do Si Do La Sol La Sol Mi:2\n' +
-      'Mi5 Re Do Si La Sol:2\n' +
-      'La Do Si Do La Sol# Fa# Sol# La:2' },
-  { id: 'adelina', name: 'Balada para Adelina', color: '#ff9a8f', oct: 0, bpm: 62,
-    text: 'Mi4:3 Fa:3 Sol:3 Mi:3\n' +
-      'Mi4:3 Fa:3 Sol:3 Mi:3\n' +
-      'Do5:1/2 Si:1/2 La Si:1/2 La:1/2 Sol:1/2 La Sol:1/2 Fa:1/2 Mi:1.5\n' +
-      'Do5:1/2 Si:1/2 La Si:1/2 La:1/2 Sol:1/2 La Sol:1/2 Fa:1/2 Mi:1.5' },
+    text: 'Mi5:2 Re Do:1/2 Si La Sol:2\n' +
+      'La Do:1/2 Si:1/2 Do La:1/2 Sol:1/2 La:1/2 Sol Mi4:2\n' +
+      'Mi5:2 Re Do:1/2 Si La Sol:2\n' +
+      'La Do:1/2 Si:1/2 Do La Sol#:1/2 Fa#:1/2 Sol# La:2' },
+  { id: 'adelina', name: 'Balada para Adelina', color: '#ff9a8f', oct: 0, bpm: 60,
+    text: 'Mi4:1.5 Mi:1/2 Fa:3 Sol:3\n' +
+      'Mi:3 Mi:1/2 Fa:3 Sol:3 Mi:3\n' +
+      'Do5:1/2 Si4:1/2 La Si:1/2 La:1/2 Sol:1/2 La Sol:1/2 Fa:1/2 Mi:1.5\n' +
+      'Do5:1/2 Si4:1/2 La Si:1/2 La:1/2 Sol#:1/2 La Sol#:1/2 Fa#:1/2 Sol#:2' },
   /* sacada del video tutorial (notas de los subtítulos + tiempos medidos en el audio, a 80 tiempos por minuto) */
   { id: 'miles', name: '500 Miles', color: '#a6ebd6', oct: 0, bpm: 80,
     text: 'Re5:1/2 Re:1 Fa#:1 Fa#:1/2 Mi:1 Re:1 Fa#:1.5\n' +
@@ -1153,6 +1164,7 @@ const DEFAULT_SONGS = [
 ];
 /* canciones de fábrica que ya existían antes de llevar la cuenta (si ella borró una, no vuelve) */
 const OLD_DEFAULT_IDS = ['canon', 'aida', 'blue', 'adelina'];
+const SONGS_CLEAN_V = 2; // sube cuando hay que cambiar las de la profe y limpiar canciones malas
 /* textos de la versión anterior (sin ritmo): si siguen igual, se cambian solos por la versión con ritmo */
 const AIDA_V2 = 'La:2 Re#:1/2 Re:1/2 Mi Re#:1/2 Mi:1/2 Fa#:2 Fa#:1/2 Fa#:1/2 Sol:2 Mi Fa# Mi Re Mi Fa# Fa#:1/2 Mi:1/2 Re Mi Fa# Mi Fa# Re#:1/2 Mi:1.5 Mi La:2 Re#:1/2 Mi:1/2 Mi:3\nFa# Mi:3\nMi Re:1/2 Mi:1/2 Fa# Fa# Mi Re:1/2 Mi:1/2 Fa# Mi Fa# Mi Mi Re#:1/2 Re:1/2 Re:4';
 const OLD_SONG_TEXTS = {
@@ -1176,6 +1188,7 @@ function defaultState() {
     v: 1,
     songs: DEFAULT_SONGS.map((s) => Object.assign({}, s)),
     seenDef: DEFAULT_SONGS.map((s) => s.id),
+    cleanV: SONGS_CLEAN_V,
     prog: { learned: {}, songs: {} },
     set: defaultSettings(),
     day: { date: todayStr(), rounds: 0, claimed: 0 },
@@ -1264,6 +1277,7 @@ function sanitizeProg(p) {
   return out;
 }
 function loadState() {
+  let resetPtr = [];
   const raw = storeRead();
   S = defaultState();
   if (!raw) return;
@@ -1278,12 +1292,26 @@ function loadState() {
       });
       S.songs = songs;
       /* canciones nuevas de fábrica: se agregan solas, una sola vez */
+      /* limpieza (nov 2026): las 4 de la profe se cambian por las nuevas y se quitan las canciones hechas a mano que salieron mal.
+         Lo que se quita queda guardado aparte por si acaso. */
+      if (!(d.cleanV >= SONGS_CLEAN_V)) {
+        const gone = S.songs.filter((x) => !DEFAULT_SONGS.some((def) => def.id === x.id));
+        if (gone.length) { try { localStorage.setItem(STORE_KEY + '_papelera', JSON.stringify({ fecha: new Date().toISOString(), canciones: gone })); } catch (e) { /* nada */ } }
+        const keep = [];
+        DEFAULT_SONGS.forEach((def) => {
+          if (OLD_DEFAULT_IDS.indexOf(def.id) >= 0) keep.push(Object.assign({}, def)); // la de la profe, nueva, aunque la hubiera borrado
+          else { const mine = S.songs.find((x) => x.id === def.id); if (mine) keep.push(mine); }
+        });
+        S.songs = keep;
+        resetPtr = OLD_DEFAULT_IDS.slice();
+      }
       const seen = Array.isArray(d.seenDef) ? d.seenDef.map(String) : OLD_DEFAULT_IDS.slice();
       DEFAULT_SONGS.forEach((def) => {
         if (seen.indexOf(def.id) < 0 && !S.songs.some((x) => x.id === def.id)) S.songs.push(Object.assign({}, def));
       });
     }
     S.prog = sanitizeProg(d.prog);
+    resetPtr.forEach((id) => { if (S.prog.songs[id]) S.prog.songs[id].ptr = [0, 0, 0, 0]; }); // las notas cambiaron: que empiece del inicio
     mergeSettings(S.set, d.set);
     if (d.day && typeof d.day === 'object') {
       S.day = { date: String(d.day.date || todayStr()), rounds: clamp(parseInt(d.day.rounds, 10) || 0, 0, 9999), claimed: clamp(parseInt(d.day.claimed, 10) || 0, 0, 100000) };
