@@ -877,7 +877,11 @@ const CENTER_MIDI = 70;
 const midiToFreq = (m) => 440 * Math.pow(2, (m - 69) / 12);
 const freqToMidi = (f) => 69 + 12 * Math.log2(f / 440);
 const pcOf = (m) => ((Math.round(m) % 12) + 12) % 12;
-const noteName = (m) => PC_NAMES[pcOf(m)];
+/* en canciones escritas con bemoles (Sib, Mib…) los nombres se muestran con bemol, como en su partitura */
+const PC_FLAT = ['Do', 'Reb', 'Re', 'Mib', 'Mi', 'Fa', 'Solb', 'Sol', 'Lab', 'La', 'Sib', 'Si'];
+let NAME_FLAT = false;
+function songUsesFlats(text) { return /(^|\s)(Do|Re|Mi|Fa|Sol|La|Si)b\d?(?=[:\s]|$)/m.test(String(text || '')); }
+const noteName = (m) => (NAME_FLAT ? PC_FLAT : PC_NAMES)[pcOf(m)];
 const noteOct = (m) => Math.floor(Math.round(m) / 12 - 1);
 const noteFull = (m) => noteName(m) + noteOct(m);
 
@@ -1216,6 +1220,20 @@ const DEFAULT_SONGS = [
       'Re4:1/2 Fa4:1/2 La4:1/2 Sib4:1/2 Do5:1/2 Fa4:1.5\n' +
       'Fa4:1/2 Sol4:1/2 La4:3.5 Fa4:1/2\n' +
       'La4:1/2 La4:1/2 Sol4:1/2 Sol4:1/2 Do5:1/2 Do5:1/2 Sib4:1/4 Sib4:1/2 La4:2.25' },
+  /* Voilà: notas del tutorial (letras en pantalla) + tiempos medidos en el audio; a la altura escrita, en 1.ª posición */
+  { id: 'voila', name: 'Voilà', color: '#ffd0a8', oct: 0, bpm: 110,
+    text: 'Sib4:1/2 La4 Sib4:1/2 La4 Sib4:1/2 La4:1.5\n' +
+      'Do5:1/2 Sib4:1/2 La4:1/2 Sol4\n' +
+      'Mi4:1/4 Fa4:1/4 Sol4 Mi4:1/4 Fa4:1/4 Sol4:1.5\n' +
+      'Sib4:1/2 La4:1/2 Sol4:1/2 Fa4\n' +
+      'Re4:1/4 Mi4:1/4 Fa4 Re4:1/4 Mi4:1/4 Fa4:1.5\n' +
+      'Sib4:1/2 La4:1/2 Sol4 Mi4:3 La4:2\n' +
+      'Sib4:1/2 La4 Sib4:1/2 La4 Sib4:1/2 La4:1.5\n' +
+      'Do5:1/2 Sib4:1/2 La4:1/2 Sol4\n' +
+      'Mi4:1/4 Fa4:1/4 Sol4 Mi4:1/4 Fa4:1/4 Sol4:1.5\n' +
+      'Sib4:1/2 La4:1/2 Sol4:1/2 Fa4\n' +
+      'Re4:1/4 Mi4:1/4 Fa4 Re4:1/4 Mi4:1/4 Fa4:1.5\n' +
+      'Sib4:1/2 La4:1/2 Sol4 Mi4:3 La4:3' },
 ];
 /* canciones de fábrica que ya existían antes de llevar la cuenta (si ella borró una, no vuelve) */
 const OLD_DEFAULT_IDS = ['canon', 'aida', 'blue', 'adelina'];
@@ -3332,8 +3350,10 @@ function bigLevel() {
 /* nota en texto bonito: el # se ve chiquito arriba */
 function noteLabel(m) {
   const nm = noteName(m);
-  const el = h('span', { class: 'nl' }, nm.replace('#', ''));
+  const flat = nm.length > 2 && nm.slice(-1) === 'b';
+  const el = h('span', { class: 'nl' }, flat ? nm.slice(0, -1) : nm.replace('#', ''));
   if (nm.indexOf('#') >= 0) el.append(h('sup', null, '#'));
+  if (flat) el.append(h('sup', null, '♭'));
   return el;
 }
 function pcColor(m) { return PC_COLORS[pcOf(m)]; }
@@ -3459,6 +3479,8 @@ function go(name, params) {
   Violin.unmount();
   const ov = $('#overlay');
   if (ov) ov.innerHTML = '';
+  const sg = params && params.songId ? S.songs.find((x) => x.id === params.songId) : null;
+  NAME_FLAT = !!(sg && songUsesFlats(sg.text));
   const scr = Screens[name](params || {});
   Nav.cur = scr; Nav.name = name; Nav.params = params || {};
   const app = $('#app');
